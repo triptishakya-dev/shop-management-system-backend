@@ -1,18 +1,17 @@
+import express from "express";
+import shopRoute from "./routers/shopRoute.js";
 
-
-import express  from "express"
-import shopRoute from "./routers/shopRoute.js";   
 const app = express();
+app.use(express.json());
 
+const port = 3000;
 
-const port = 3000 ;
+app.get("/", (req, res) => {
+  res.send("hello");
+});
 
-app.get("/",(req,res) => {
-    res.send("hello")
-})
+app.use("/", shopRoute);
 
-app.use ("/shop",shopRoute)
-
-app.listen(port,() =>{
-console.log("my port is listening")
-})
+app.listen(port, () => {
+  console.log("my port is listening");
+});

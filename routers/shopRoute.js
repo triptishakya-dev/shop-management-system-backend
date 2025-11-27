@@ -1,8 +1,10 @@
 import express from "express";
-import { addShop } from "../controllers/shopController";
+import { addShop, getshop } from "../controllers/shopController.js";
 
 
 const router = express.Router();
-router.post("/", addShop);
+router.post("/api/user", addShop);
+router.get("/api/shop" ,   getshop);
+ 
 
 export default router;
