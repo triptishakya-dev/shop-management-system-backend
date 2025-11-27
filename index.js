@@ -12,6 +12,7 @@ app.get("/", (req, res) => {
 
 app.use("/", shopRoute);
 
+
 app.listen(port, () => {
   console.log("my port is listening");
 });

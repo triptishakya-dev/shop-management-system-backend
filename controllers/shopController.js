@@ -111,4 +111,72 @@ export const getShopById = async (req, res) => {
   }
 };
 
-// patch-full update
+// delete shop
+
+
+export const deleteShop = async (req,res) =>{
+  try {
+    const {id} = req.params;
+    if(!id || id.trim()===  ""){
+      return res.status(400).json({error: "user id is required"})
+    }
+
+    const existingUser = await prisma.shop.findUnique({
+       where: { id: Number(id) }
+
+    });
+
+    if(!existingUser){
+      return res.status(404).json({error: "user not found"})
+    }
+
+    await prisma.shop.delete({
+      where: { id: Number(id) },
+    })
+
+    return res.status(200).json({message:"user deleted sucessfully"})
+  } catch (error) {
+    console.log(error)
+    console.log("internal serval eeror")
+    return res.status(500).json({error:"internal server error"})
+  }
+}
+
+// update shop
+
+export const updateShop = async(req,res)=>{
+try {
+  console.log("api is running")
+  const {id} = req.params;
+  console.log(req.body)
+
+  if(!id){
+    res.status(400).json({message:"id is not available"})
+  }
+
+
+  const existingShop = await prisma.shop.findUnique({
+    where:{id}
+  })
+
+if(!existingShop){
+  res.status(404).json({message:"shop not found"})
+}
+
+const updateShop = await prisma.shop.update({
+  where: {id},
+   data: req.body,
+
+})
+
+res.status(200).json({message:"update sucessfully" ,
+  shop:updateShop
+}
+  
+)
+
+
+} catch (error) {
+  
+}
+}
