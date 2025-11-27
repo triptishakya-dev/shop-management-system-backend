@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export const addShop = async (req, res) => {
   try {
     console.log("api is running");
-    console.log(req.body)
+    console.log(req.body);
 
     const {
       FirstName,
@@ -33,11 +33,17 @@ export const addShop = async (req, res) => {
     console.log("fields extracted propley");
 
     // Validate required fields according to Prisma schema
-    if (!FirstName || !Phone || !Email || !Address || !City || !State || !Pincode) {
+    if (
+      !FirstName ||
+      !Phone ||
+      !Email ||
+      !Address ||
+      !City ||
+      !State ||
+      !Pincode
+    ) {
       console.log("All fied must be required");
-       res
-        .status(400)
-        .json({ message: "All required fields must be provided" });
+      res.status(400).json({ message: "All required fields must be provided" });
     }
 
     console.log("Databse call started");
@@ -49,7 +55,7 @@ export const addShop = async (req, res) => {
         address: Address,
         phone: Phone,
         email: Email,
-        city: City, 
+        city: City,
         state: State,
         pincode: Pincode,
         gstNumber: GstNumber,
@@ -69,8 +75,7 @@ export const addShop = async (req, res) => {
   }
 };
 
-
-// get api started 
+// get api started
 
 export const getshop = async (req, res) => {
   try {
@@ -81,7 +86,6 @@ export const getshop = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 // single user by id
 export const getShopById = async (req, res) => {
@@ -97,7 +101,7 @@ export const getShopById = async (req, res) => {
     const shopId = Number(id);
 
     const shop = await prisma.shop.findUnique({
-      where: { id: shopId }
+      where: { id: shopId },
     });
 
     if (!shop) {
@@ -113,70 +117,69 @@ export const getShopById = async (req, res) => {
 
 // delete shop
 
-
-export const deleteShop = async (req,res) =>{
+export const deleteShop = async (req, res) => {
   try {
-    const {id} = req.params;
-    if(!id || id.trim()===  ""){
-      return res.status(400).json({error: "user id is required"})
+    const { id } = req.params;
+    if (!id || id.trim() === "") {
+      return res.status(400).json({ error: "user id is required" });
     }
 
     const existingUser = await prisma.shop.findUnique({
-       where: { id: Number(id) }
-
+      where: { id: Number(id) }
     });
 
-    if(!existingUser){
-      return res.status(404).json({error: "user not found"})
+    if (!existingUser) {
+      return res.status(404).json({ error: "user not found" });
     }
 
     await prisma.shop.delete({
       where: { id: Number(id) },
-    })
+    });
 
-    return res.status(200).json({message:"user deleted sucessfully"})
+    return res.status(200).json({ message: "user deleted sucessfully" });
   } catch (error) {
-    console.log(error)
-    console.log("internal serval eeror")
-    return res.status(500).json({error:"internal server error"})
+    console.log(error);
+    console.log("internal serval eeror");
+    return res.status(500).json({ error: "internal server error" });
   }
-}
+};
 
 // update shop
 
-export const updateShop = async(req,res)=>{
-try {
-  console.log("api is running")
-  const {id} = req.params;
-  console.log(req.body)
+export const updateShop = async (req, res) => {
+  try {
+    console.log("api is running");
+    const { id } = req.params;
+    // console.log(req.body);
+    console.log(typeof id);
 
-  if(!id){
-    res.status(400).json({message:"id is not available"})
+    if (!id) {
+     return res.status(400).json({ message: "id is not available" });
+    }
+   
+  
+    console.log("db call ho rha hai amdarchod")
+    const existingShop = await prisma.shop.findUnique({
+      where: { id: Number(id) }
+
+    });
+
+    console.log(existingShop)
+
+    if (!existingShop) {
+      
+      res.status(404).json({ message: "shop not found" });
+    }
+
+    const updateShop = await prisma.shop.update({
+      where: { id: Number(id) },
+      data: req.body,
+    });
+    console.log(updateShop)
+
+    res.status(200).json({ message: "update sucessfully", shop: updateShop });
+  } catch (error) {
+    console.error("Error updating shop:", error);
+  return  res.status(500).json({ error: "Internal server error" });
   }
-
-
-  const existingShop = await prisma.shop.findUnique({
-    where:{id}
-  })
-
-if(!existingShop){
-  res.status(404).json({message:"shop not found"})
-}
-
-const updateShop = await prisma.shop.update({
-  where: {id},
-   data: req.body,
-
-})
-
-res.status(200).json({message:"update sucessfully" ,
-  shop:updateShop
-}
-  
-)
-
-
-} catch (error) {
-  
-}
-}
+};
